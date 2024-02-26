@@ -1,19 +1,14 @@
 import asyncio
+
 import os
+
 from loguru import logger  # https://github.com/Delgan/loguru
 from opentele.api import UseCurrentSession  # https://opentele.readthedocs.io/en/latest/#installation
 from opentele.tl import TelegramClient
-from configparser import ConfigParser
-import json
+
+from config.config_manager import read_config, write_config
 
 logger.add("log/log.log")
-
-
-# def read_config():
-#     """Reads the path from the INI file."""
-#     config = ConfigParser()
-#     config.read('config.ini')  # Adjust the file name if needed
-#     return config.get('Paths', 'session_path')
 
 
 def scan_session_files(session_path):
@@ -27,33 +22,34 @@ def scan_session_files(session_path):
     return entities
 
 
-def read_config():
-    """Reads the path from the JSON file."""
-    with open('config.json', 'r', encoding='utf-8') as json_file:
-        config = json.load(json_file)
-        return config['session_path']
-
-
 async def main():
     """Main function"""
-    user_input = input("Введите путь к папке с сессиями: ")
-    session_path = rf"{user_input}"
+    print('TelegramMaster_Converter\n'
+          '[1] - Запустить конвертацию\n'
+          '[2] - Настройки\n')
 
-    # Write session_path to a JSON file
-    with open('config.json', 'w', encoding='utf-8') as json_file:
-        json.dump({'session_path': session_path}, json_file, ensure_ascii=False, indent=4)
+    user_input = input('Выберите пункт меню: ')
+    if user_input == '1':
+        print('Запуск конвертации')
 
-    session_path = read_config()
-    logger.info(f"{session_path}")
-    entities = scan_session_files(session_path)
-    for e in entities:
-        logger.debug(e)
-        client = TelegramClient(f"{session_path}/{e}")
-        logger.info(f"{client}")
-        tdesk = await client.ToTDesktop(flag=UseCurrentSession)
-        logger.info(f"{tdesk}")
-        logger.info(f"Saving Tdata/tdata")
-        tdesk.SaveTData("Tdata/tdata")
+        session_path = read_config()
+        logger.info(f"{session_path}")
+        entities = scan_session_files(session_path)
+        for e in entities:
+            logger.debug(e)
+            client = TelegramClient(f"{session_path}/{e}")
+            logger.info(f"{client}")
+            tdesk = await client.ToTDesktop(flag=UseCurrentSession)
+            logger.info(f"{tdesk}")
+            logger.info(f"Saving Tdata/tdata")
+            tdesk.SaveTData("Tdata/tdata")
+
+    elif user_input == '2':
+        print('Настройки')
+
+        user_input = input("Введите путь к папке с сессиями: ")
+        session_path = rf"{user_input}"
+        write_config(session_path)
 
 
 asyncio.run(main())
