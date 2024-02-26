@@ -6,7 +6,7 @@ from loguru import logger  # https://github.com/Delgan/loguru
 from opentele.api import UseCurrentSession  # https://opentele.readthedocs.io/en/latest/#installation
 from opentele.tl import TelegramClient
 
-from config.config_manager import read_config, write_config
+from config.config_manager import read_config, write_config, write_config2, read_config_tdata
 
 logger.add("log/log.log")
 
@@ -26,7 +26,8 @@ async def main():
     """Main function"""
     print('TelegramMaster_Converter\n'
           '[1] - Запустить конвертацию\n'
-          '[2] - Настройки\n')
+          '[2] - Путь к папке с сессиями\n'
+          '[3] - Путь к папке с tdata\n')
 
     user_input = input('Выберите пункт меню: ')
     if user_input == '1':
@@ -42,7 +43,8 @@ async def main():
             tdesk = await client.ToTDesktop(flag=UseCurrentSession)
             logger.info(f"{tdesk}")
             logger.info(f"Saving Tdata/tdata")
-            tdesk.SaveTData("Tdata/tdata")
+            tdata_path = read_config_tdata()
+            tdesk.SaveTData(f"{tdata_path}/{e}/tdata")
 
     elif user_input == '2':
         print('Настройки')
@@ -50,6 +52,13 @@ async def main():
         user_input = input("Введите путь к папке с сессиями: ")
         session_path = rf"{user_input}"
         write_config(session_path)
+
+    elif user_input == '3':
+        print('Настройки')
+
+        user_input = input("Введите путь к папке с tdata: ")
+        tdata_path = rf"{user_input}"
+        write_config2(tdata_path)
 
 
 asyncio.run(main())
