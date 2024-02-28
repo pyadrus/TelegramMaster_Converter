@@ -1,10 +1,10 @@
 import asyncio
-
 import os
 
 from loguru import logger  # https://github.com/Delgan/loguru
 from opentele.api import UseCurrentSession  # https://opentele.readthedocs.io/en/latest/#installation
 from opentele.tl import TelegramClient
+from rich import print  # https://rich.readthedocs.io/en/stable/appendix/colors.html
 
 from config.config_manager import read_config, write_config, write_config2, read_config_tdata
 
@@ -24,10 +24,10 @@ def scan_session_files(session_path):
 
 async def main():
     """Main function"""
-    print('TelegramMaster_Converter\n'
-          '[1] - Запустить конвертацию\n'
-          '[2] - Путь к папке с сессиями\n'
-          '[3] - Путь к папке с tdata\n')
+    print('[medium_violet_red]TelegramMaster_Converter 28.02.2024 v.0.0.1\n\n'
+          '[red][1] - Запустить конвертацию\n'
+          '[red][2] - Путь к папке с сессиями\n'
+          '[red][3] - Путь к папке с tdata\n')
 
     user_input = input('Выберите пункт меню: ')
     if user_input == '1':
