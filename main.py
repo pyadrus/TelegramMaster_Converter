@@ -15,14 +15,16 @@ logger.add("log/log.log")
 def scan_session_files(session_path) -> list:
     """
     Возвращает список имен учетных записей по указанному пути сеанса.
+    :param session_path: Путь к сеансу.
+    :return: Список имен учетных записей.
     """
-    entities = []
+    entities = []  # Список имен учетных записей.
     for entry in os.scandir(session_path):
         if entry.is_file() and entry.name.endswith(".session"):
-            file = os.path.splitext(entry.name)[0]
+            file = os.path.splitext(entry.name)[0]  # Имя файла.
             print(f"Found accounts: {file}.session")
-            entities.append(file)
-    return entities
+            entities.append(file)  # Добавляем имя файла в список.
+    return entities  # Возвращаем список аккаунтов.
 
 
 async def convert_session_to_tdata() -> None:
@@ -30,21 +32,25 @@ async def convert_session_to_tdata() -> None:
     Преобразует файлы сеанса по указанному пути сеанса в файлы tdata.
     :return: None
     """
-    session_path = read_config()
+    session_path = read_config()  # Путь к сеансу
     logger.info(f"{session_path}")
-    entities = scan_session_files(session_path)
+    entities = scan_session_files(session_path)  # Список имен учетных записей.
     for e in entities:
         logger.debug(e)
         client = TelegramClient(f"{session_path}/{e}")
         logger.info(f"{client}")
-        tdesk = await client.ToTDesktop(flag=UseCurrentSession)
+        tdesk = await client.ToTDesktop(flag=UseCurrentSession)  # Получаем tdesk
         logger.info(f"{tdesk}")
         logger.info(f"Saving Tdata/tdata")
-        tdata_path = read_config_tdata()
-        tdesk.SaveTData(f"{tdata_path}/{e}/tdata")
+        tdata_path = read_config_tdata()  # Путь к tdata
+        tdesk.SaveTData(f"{tdata_path}/{e}/tdata")  # Сохраняем tdata
 
 
 async def wait_and_read():
+    """
+    Ожидает ввода команды и выполняет ее.
+    :return: None
+    """
     seen_files = set()
 
     while True:
@@ -52,16 +58,19 @@ async def wait_and_read():
             if entry.is_file() and entry.name.endswith(".session"):
                 if entry.path not in seen_files:
                     seen_files.add(entry.path)
-                    # File has appeared, get the current time
+                    # Файл появился, узнать текущее время
                     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    # Output information about the new session
+                    # Вывод информации о новом сеансе
                     print(f'[{current_time}] : {entry.name}')
 
         await asyncio.sleep(1)
 
 
 async def main():
-    """Основное меню программы"""
+    """
+    Основное меню программы
+    :return: None
+    """
     print('[medium_violet_red]TelegramMaster_Converter 28.02.2024 v.0.0.1\n\n'
           '[red][1] - Запустить конвертацию\n'
           '[red][2] - Путь к папке с сессиями\n'
