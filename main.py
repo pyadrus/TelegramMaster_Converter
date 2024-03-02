@@ -95,7 +95,7 @@ async def main():
     Основное меню программы
     :return: None
     """
-    print('[medium_violet_red]TelegramMaster_Converter 02.03.2024 v.0.0.3\n\n'
+    print('[medium_violet_red]TelegramMaster_Converter 02.03.2024 v.0.0.4\n\n'
           '[red][1] - Запустить конвертацию\n'
           '[red][2] - Путь к папке с сессиями\n'
           '[red][3] - Путь к папке с tdata\n'
