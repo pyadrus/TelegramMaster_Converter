@@ -48,10 +48,18 @@ async def convert_session_to_tdata() -> None:
 
 
 async def convert(session_path, entry) -> None:
+    """
+    Преобразует файлы сеанса в файлы tdata.
+    :param session_path: Путь к сеансу.
+    :param entry: Имя файла.
+    :return: None
+    """
     client = TelegramClient(f"{session_path}/{entry.name}")
     try:
         tdesk = await client.ToTDesktop(flag=UseCurrentSession)  # Пример использования get_me вместо ToTDesktop
         logger.info(f"Сохраняем файл {entry} в tdata")
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        logger.info(f"[{current_time}] Успешная конвертация")
         tdata_path = read_config_tdata()  # Путь к tdata
         tdesk.SaveTData(f"{tdata_path}/{entry.name}/tdata")  # Сохраняем tdata
         await client.disconnect()
@@ -64,6 +72,8 @@ async def convert(session_path, entry) -> None:
         logger.error(f"Ошибка при подключении к Telegram: {e}")
         await client.disconnect()
         time.sleep(3)
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        logger.info(f"[{current_time}] Не успешная конвертация")
         # Перемещаем обработанный файл в папку session_convert
         new_path = os.path.join('session_bad', entry.name)
         os.rename(entry.path, new_path)
@@ -85,7 +95,7 @@ async def wait_and_read():
                     # Файл появился, узнать текущее время
                     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     # Вывод информации о новом сеансе
-                    print(f'[{current_time}] : {entry.name}')
+                    print(f'[{current_time}] новая сессия: {entry.name}')
                     await convert(session_path, entry)  # Преобразуем сеанс в tdat
         await asyncio.sleep(1)
 
