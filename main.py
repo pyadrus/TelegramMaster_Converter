@@ -4,10 +4,13 @@ import time
 from datetime import datetime
 
 from loguru import logger  # https://github.com/Delgan/loguru
-from opentele.api import UseCurrentSession  # https://opentele.readthedocs.io/en/latest/#installation
+from opentele.api import API, CreateNewSession, \
+    UseCurrentSession  # https://opentele.readthedocs.io/en/latest/#installation
+from opentele.td import TDesktop
 from opentele.tl import TelegramClient
 from rich import print  # https://rich.readthedocs.io/en/stable/appendix/colors.html
 from rich.console import Console
+
 from config.config_manager import read_config, write_config, write_config2, read_config_tdata
 
 logger.add("log/log.log")  # Логирование в файл log.log
@@ -100,6 +103,20 @@ async def wait_and_read():
         await asyncio.sleep(1)
 
 
+async def converter_tdata():
+
+    tdataFolder = 'Tdata/tdata'
+    tdesk = TDesktop(tdataFolder)  # Assuming TDesktop constructor doesn't take 'tdataFolder' argument directly
+
+    api = API.TelegramIOS.Generate()
+    client = await tdesk.ToTelethon("newSession.session", CreateNewSession, api)
+
+    await client.connect()
+    await client.PrintSessions()
+
+
+
+
 async def main():
     """
     Основное меню программы
@@ -109,7 +126,8 @@ async def main():
           '[red][1] - Запустить конвертацию\n'
           '[red][2] - Путь к папке с сессиями\n'
           '[red][3] - Путь к папке с tdata\n'
-          '[red][4] - Запуск конвертера в асинхронном режиме\n\n')
+          '[red][4] - Запуск конвертера в асинхронном режиме\n'
+          '[red][5] - Конвертация с tdata в session\n')
 
     user_input = console.input('[green]Выберите пункт меню: ')
     if user_input == '1':  # Запустить конвертацию
@@ -131,6 +149,9 @@ async def main():
     elif user_input == '4':  # Запуск конвертера в асинхронном режиме
         print('[chartreuse2] Запуск конвертации в асинхронном режиме')
         await wait_and_read()  # Запускаем задачу на чтение файла
+
+    elif user_input == '5':  # Конвертация с tdata в session
+        await converter_tdata()  # Конвертируем tdata в session
 
 
 asyncio.run(main())

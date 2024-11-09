@@ -65,6 +65,5 @@ https://www.python.org/.
 
 ### Для получения обратной связи обратитесь в:
 
-Telegram-канал 🔗 https://t.me/master_tg_d \
-VKontakte 🔗 https://vk.com/tg_smm2
+Telegram-канал 🔗 https://t.me/master_tg_d
 
