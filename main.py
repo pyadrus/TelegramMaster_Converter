@@ -104,7 +104,6 @@ async def wait_and_read():
 
 
 async def converter_tdata():
-
     tdataFolder = 'Tdata/tdata'
     tdesk = TDesktop(tdataFolder)  # Assuming TDesktop constructor doesn't take 'tdataFolder' argument directly
 
@@ -113,8 +112,6 @@ async def converter_tdata():
 
     await client.connect()
     await client.PrintSessions()
-
-
 
 
 async def main():
